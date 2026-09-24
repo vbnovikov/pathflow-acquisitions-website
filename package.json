@@ -17,6 +17,7 @@
     "worker:whoami": "wrangler whoami",
     "worker:dev": "wrangler dev --config workers/contact/wrangler.toml",
     "worker:deploy": "wrangler deploy --config workers/contact/wrangler.toml",
+    "worker:secret:resend": "wrangler secret put RESEND_API_KEY --config workers/contact/wrangler.toml",
     "worker:secret:turnstile": "wrangler secret put TURNSTILE_SECRET_KEY --config workers/contact/wrangler.toml",
     "worker:tail": "wrangler tail --config workers/contact/wrangler.toml",
     "worker:typecheck": "tsc -p workers/contact/tsconfig.json"

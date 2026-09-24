@@ -10,9 +10,3 @@ EMAIL_FROM_NAME = "Pathflow Website"
 EMAIL_TO = "info@getpathflow.com"
 CONTACT_SUBJECT_PREFIX = "New Pathflow inquiry"
 REQUIRE_TURNSTILE = "false"
-
-[[send_email]]
-name = "EMAIL"
-destination_address = "info@getpathflow.com"
-allowed_sender_addresses = ["website@getpathflow.com"]
-remote = true

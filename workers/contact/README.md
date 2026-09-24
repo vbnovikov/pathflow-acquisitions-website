@@ -1,16 +1,21 @@
 # Contact Worker
 
-Cloudflare Worker endpoint for the Pathflow Acquisitions contact form.
+Cloudflare Worker endpoint for the Pathflow Acquisitions contact form. Email delivery uses Resend.
 
 ## Setup
 
-1. In Cloudflare, enable Email Service for `getpathflow.com`.
-2. Verify the destination mailbox `info@getpathflow.com`.
-3. Review `workers/contact/wrangler.toml`, especially `ALLOWED_ORIGINS`, `EMAIL_FROM`, and `EMAIL_TO`.
-4. Log in to Cloudflare:
+1. Verify the sender domain/address in Resend.
+2. Review `workers/contact/wrangler.toml`, especially `ALLOWED_ORIGINS`, `EMAIL_FROM`, and `EMAIL_TO`.
+3. Log in to Cloudflare:
 
 ```bash
 npm run worker:login
+```
+
+4. Store the Resend API key as a Worker secret:
+
+```bash
+npm run worker:secret:resend
 ```
 
 5. Deploy the Worker:
@@ -40,4 +45,4 @@ Copy `.dev.vars.example` to `.dev.vars` if you need local secrets. Do not commit
 npm run worker:dev
 ```
 
-The send-email binding uses Cloudflare remote bindings, so local development still talks to Cloudflare Email Service.
+Local development needs `RESEND_API_KEY` in `.dev.vars` if you want to send through Resend locally.

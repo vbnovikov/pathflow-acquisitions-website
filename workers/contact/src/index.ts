@@ -1,26 +1,10 @@
-type EmailAddress = {
-  email: string;
-  name?: string;
-};
-
-type EmailBinding = {
-  send(message: {
-    to: string | EmailAddress | Array<string | EmailAddress>;
-    from: string | EmailAddress;
-    subject: string;
-    html?: string;
-    text?: string;
-    replyTo?: string | EmailAddress;
-  }): Promise<{ messageId: string }>;
-};
-
 interface Env {
-  EMAIL: EmailBinding;
   ALLOWED_ORIGINS?: string;
   CONTACT_SUBJECT_PREFIX?: string;
   EMAIL_FROM: string;
   EMAIL_FROM_NAME?: string;
   EMAIL_TO: string;
+  RESEND_API_KEY?: string;
   REQUIRE_TURNSTILE?: string;
   TURNSTILE_SECRET_KEY?: string;
 }
@@ -50,6 +34,24 @@ type TurnstileVerification = {
   action?: string;
   hostname?: string;
   "error-codes"?: string[];
+};
+
+type ResendEmailPayload = {
+  from: string;
+  to: string[];
+  subject: string;
+  html: string;
+  text: string;
+  reply_to: string[];
+};
+
+type ResendEmailResponse = {
+  id?: string;
+  error?: {
+    name?: string;
+    message?: string;
+    statusCode?: number;
+  };
 };
 
 const DEFAULT_ALLOWED_ORIGINS = [
@@ -118,15 +120,15 @@ export default {
       return jsonResponse({ ok: false, error: normalized.error }, 400, origin, env);
     }
 
-    if (!env.EMAIL_FROM || !env.EMAIL_TO) {
+    if (!env.RESEND_API_KEY || !env.EMAIL_FROM || !env.EMAIL_TO) {
       console.error("contact_worker_missing_email_config");
       return jsonResponse({ ok: false, error: "Email delivery is not configured." }, 500, origin, env);
     }
 
     try {
       const email = buildEmail(normalized.submission, env);
-      const result = await env.EMAIL.send(email);
-      return jsonResponse({ ok: true, id: result.messageId }, 200, origin, env);
+      const result = await sendWithResend(email, env);
+      return jsonResponse({ ok: true, id: result.id || null }, 200, origin, env);
     } catch (error) {
       console.error("contact_worker_email_failed", serializeError(error));
       return jsonResponse({ ok: false, error: "Unable to send inquiry right now." }, 502, origin, env);
@@ -226,25 +228,48 @@ async function verifyTurnstileIfConfigured(
   return null;
 }
 
-function buildEmail(submission: ContactSubmission, env: Env) {
+function buildEmail(submission: ContactSubmission, env: Env): ResendEmailPayload {
   const subjectSource = submission.company || submission.name;
   const subjectPrefix = env.CONTACT_SUBJECT_PREFIX || "New Pathflow inquiry";
   const subject = `${subjectPrefix}: ${subjectSource}`.slice(0, 140);
 
   return {
-    to: env.EMAIL_TO,
-    from: {
-      email: env.EMAIL_FROM,
-      name: env.EMAIL_FROM_NAME || "Pathflow Website",
-    },
-    replyTo: {
-      email: submission.workEmail,
-      name: submission.name,
-    },
+    to: [env.EMAIL_TO],
+    from: formatEmailAddress(env.EMAIL_FROM, env.EMAIL_FROM_NAME || "Pathflow Website"),
+    reply_to: [formatEmailAddress(submission.workEmail, submission.name)],
     subject,
     text: buildTextBody(submission),
     html: buildHtmlBody(submission),
   };
+}
+
+async function sendWithResend(email: ResendEmailPayload, env: Env): Promise<ResendEmailResponse> {
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(email),
+  });
+
+  const responseText = await response.text();
+  let result: ResendEmailResponse = {};
+
+  if (responseText) {
+    try {
+      result = JSON.parse(responseText) as ResendEmailResponse;
+    } catch {
+      result = {};
+    }
+  }
+
+  if (!response.ok) {
+    const message = result.error?.message || responseText || "Unknown Resend error";
+    throw new Error(`Resend email send failed with ${response.status}: ${message}`);
+  }
+
+  return result;
 }
 
 function buildTextBody(submission: ContactSubmission): string {
@@ -299,6 +324,11 @@ function readProducts(value: unknown): string[] {
 
 function isEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function formatEmailAddress(email: string, name: string): string {
+  const safeName = name.replace(/[<>"\r\n]/g, "").trim();
+  return safeName ? `${safeName} <${email}>` : email;
 }
 
 function isRateLimited(key: string): boolean {
