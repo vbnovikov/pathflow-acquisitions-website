@@ -35,6 +35,61 @@ const contactHref = `mailto:${contactEmail}`;
 const contactEndpoint =
   import.meta.env.VITE_CONTACT_ENDPOINT || "https://pathflow-contact.vladimir-246.workers.dev";
 const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || "";
+const appBasePath = normalizeBasePath(import.meta.env.BASE_URL);
+
+function normalizeBasePath(baseUrl: string) {
+  if (!baseUrl || baseUrl === "/" || baseUrl === "./") {
+    return "";
+  }
+
+  return `/${baseUrl.replace(/^\.?\//, "").replace(/\/$/, "")}`;
+}
+
+function siteHref(path = "/") {
+  if (path === "/" || !path) {
+    return appBasePath || "/";
+  }
+
+  if (path.startsWith("#")) {
+    return `${appBasePath}${path}`;
+  }
+
+  if (path.startsWith("/#")) {
+    return `${appBasePath}${path.slice(1)}`;
+  }
+
+  if (path.startsWith("/")) {
+    return `${appBasePath}${path}`;
+  }
+
+  return `${appBasePath}/${path}`;
+}
+
+function assetPath(path: string) {
+  const cleanPath = path.replace(/^\/+/, "");
+  const baseUrl = import.meta.env.BASE_URL && import.meta.env.BASE_URL !== "./" ? import.meta.env.BASE_URL : "/";
+  const normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+
+  return `${normalizedBaseUrl}${cleanPath}`;
+}
+
+function normalizeRoutePath(path?: string) {
+  if (!path) {
+    return "";
+  }
+
+  let routePath = path.split("#")[0].replace(/\/$/, "");
+
+  if (appBasePath && routePath === appBasePath) {
+    return "/";
+  }
+
+  if (appBasePath && routePath.startsWith(`${appBasePath}/`)) {
+    routePath = routePath.slice(appBasePath.length);
+  }
+
+  return routePath || "/";
+}
 
 type NavItem = {
   label: string;
@@ -112,24 +167,24 @@ type FollowupScenario = {
 
 const platformCards: PlatformCard[] = [
   {
-    href: "/acquisitions",
-    image: "/images/acquisitions.png",
+    href: siteHref("/"),
+    image: assetPath("/images/acquisitions.png"),
     imageAlt: "Acquisitions workspace preview",
     title: "Acquisitions",
     text: "From inquiry to qualified opportunity.",
     bullets: ["Instant lead response", "Text + voice follow-up", "Qualification and booking"],
   },
   {
-    href: "/conversations",
-    image: "/images/conversations.png",
+    href: siteHref("/conversations"),
+    image: assetPath("/images/conversations.png"),
     imageAlt: "Conversations workspace preview",
     title: "Conversations",
     text: "Understand what happens on every call.",
     bullets: ["Transcripts and summaries", "CRM-ready call insights", "Full conversation context"],
   },
   {
-    href: "/documents",
-    image: "/images/documents.png",
+    href: siteHref("/documents"),
+    image: assetPath("/images/documents.png"),
     imageAlt: "Documents workspace preview",
     title: "Documents",
     text: "Collect, review, and move deals forward.",
@@ -145,33 +200,33 @@ const testimonials: Testimonial[] = [
   {
     quote:
       "Pathflow has completely changed how we handle leads. Nothing falls through the cracks anymore, and our team can focus on the opportunities that actually need us.",
-    image: "/images/evanvart-tersimonial.png",
+    image: assetPath("/images/evanvart-tersimonial.png"),
     name: "Evan V.",
     company: "Home Financing Solution",
   },
   {
     quote:
       "Acquisitions gives us instant response, qualification, and follow-up in one motion. Serious leads keep moving, and our team sees the booked appointments that matter.",
-    image: "/images/adi-g-testimonial.png",
+    image: assetPath("/images/adi-g-testimonial.png"),
     name: "Adi G.",
     company: "Farm Financing Ontario",
   },
 ];
 
 const navItems: NavItem[] = [
-  { label: "Product", href: "/#platform" },
-  { label: "How it works", href: "/how-it-works" },
-  { label: "Customers", href: "/#customers" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Contact", href: "/contact" },
+  { label: "Product", href: siteHref("/#platform") },
+  { label: "How it works", href: siteHref("/how-it-works") },
+  { label: "Customers", href: siteHref("/#customers") },
+  { label: "Pricing", href: siteHref("/pricing") },
+  { label: "Contact", href: siteHref("/contact") },
 ];
 
 const footerLinks = [
-  { label: "Product", href: "/#platform" },
-  { label: "How it works", href: "/how-it-works" },
-  { label: "Customers", href: "/#customers" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Contact", href: "/contact" },
+  { label: "Product", href: siteHref("/#platform") },
+  { label: "How it works", href: siteHref("/how-it-works") },
+  { label: "Customers", href: siteHref("/#customers") },
+  { label: "Pricing", href: siteHref("/pricing") },
+  { label: "Contact", href: siteHref("/contact") },
 ];
 
 const howSteps: HowStep[] = [
@@ -482,8 +537,8 @@ const initialHeroFeed: HeroFeedCard[] = heroEvents.slice(0, 3).map((event, index
 }));
 
 function SiteHeader({
-  startHref = "/#start",
-  logoSrc = "/images/pf_black_transparent.png",
+  startHref = siteHref("/#start"),
+  logoSrc = assetPath("/images/pf_black_transparent.png"),
   brandName = "Acquisitions",
   activeHref,
 }: {
@@ -492,11 +547,11 @@ function SiteHeader({
   brandName?: string;
   activeHref?: string;
 }) {
-  const normalizedActiveHref = activeHref?.replace(/\/$/, "");
+  const normalizedActiveHref = normalizeRoutePath(activeHref);
 
   return (
     <header className="site-header">
-      <a className="brand" href="/" aria-label="Pathflow Acquisitions home">
+      <a className="brand" href={siteHref("/")} aria-label="Pathflow Acquisitions home">
         <span className="brand-mark">
           <img src={logoSrc} alt="" />
         </span>
@@ -506,10 +561,10 @@ function SiteHeader({
       <nav className="primary-nav" aria-label="Primary navigation">
         {navItems.map((item) => (
           <a
-            className={item.href.replace(/\/$/, "") === normalizedActiveHref ? "is-active" : undefined}
+            className={normalizeRoutePath(item.href) === normalizedActiveHref ? "is-active" : undefined}
             href={item.href}
             key={item.label}
-            aria-current={item.href.replace(/\/$/, "") === normalizedActiveHref ? "page" : undefined}
+            aria-current={normalizeRoutePath(item.href) === normalizedActiveHref ? "page" : undefined}
           >
             {item.label}
             {item.hasDropdown && <ChevronDown size={14} />}
@@ -532,8 +587,8 @@ function SiteHeader({
 function CanonicalFooter() {
   return (
     <footer className="canonical-footer">
-      <a className="canonical-footer-brand" href="/" aria-label="Pathflow home">
-        <img src="/images/pf_transparent.png" alt="" />
+      <a className="canonical-footer-brand" href={siteHref("/")} aria-label="Pathflow home">
+        <img src={assetPath("/images/pf_transparent.png")} alt="" />
         <span>Pathflow</span>
       </a>
       <p>Build a more capable business.</p>
@@ -756,12 +811,12 @@ function LandingPage() {
       <section className="hero-section" aria-labelledby="hero-heading">
         <div className="hero-art" aria-hidden="true">
           <picture>
-            <source media="(min-width: 2200px)" srcSet="/images/landing-hero-tall.png" />
-            <img src="/images/landing-hero-tall.png" alt="" />
+            <source media="(min-width: 2200px)" srcSet={assetPath("/images/landing-hero-tall.png")} />
+            <img src={assetPath("/images/landing-hero-tall.png")} alt="" />
           </picture>
         </div>
 
-        <SiteHeader startHref="#start" logoSrc="/images/pf_transparent.png" brandName="Acquisitions" />
+        <SiteHeader startHref="#start" logoSrc={assetPath("/images/pf_transparent.png")} brandName="Acquisitions" />
 
         <div className="hero-grid">
           <div className="hero-copy">
@@ -778,7 +833,7 @@ function LandingPage() {
               <a className="button button-light button-large" href="#start">
                 See Acquisitions <ArrowRight size={18} />
               </a>
-              <a className="hero-video-link" href="/how-it-works">
+              <a className="hero-video-link" href={siteHref("/how-it-works")}>
                 <span><Play size={15} /></span>
                 Watch video
               </a>
@@ -826,7 +881,7 @@ function LandingPage() {
       </section>
 
       <section className="followup-banner-section" id="how-it-works">
-        <img className="followup-banner-image" src="/images/landing-banner.png" alt="" />
+        <img className="followup-banner-image" src={assetPath("/images/landing-banner.png")} alt="" />
         <div className="followup-banner-content">
           <div className="followup-banner-copy">
             <h2>
@@ -837,7 +892,7 @@ function LandingPage() {
               Most leads do not book on the first message. Acquisitions keeps
               following up across text and voice until the opportunity is resolved.
             </p>
-            <a className="button button-light" href="/how-it-works">
+            <a className="button button-light" href={siteHref("/how-it-works")}>
               See the follow-up flow <ArrowRight size={18} />
             </a>
           </div>
@@ -922,7 +977,7 @@ function LandingPage() {
       </section>
 
       <section className="final-cta-section" id="start">
-        <img className="final-cta-image" src="/images/bottom-banner.png" alt="" />
+        <img className="final-cta-image" src={assetPath("/images/bottom-banner.png")} alt="" />
         <div className="final-cta-content">
           <p className="eyebrow">Pathflow acquisitions</p>
           <h2>
@@ -953,11 +1008,11 @@ function HowItWorksPage() {
     <main className="how-page">
       <section className="how-hero-section" aria-labelledby="how-hero-heading">
         <picture className="how-hero-art" aria-hidden="true">
-          <source media="(min-width: 1700px)" srcSet="/images/how_it_works/hero_wide.png" />
-          <img src="/images/how_it_works/hero.png" alt="" />
+          <source media="(min-width: 1700px)" srcSet={assetPath("/images/how_it_works/hero_wide.png")} />
+          <img src={assetPath("/images/how_it_works/hero.png")} alt="" />
         </picture>
 
-        <SiteHeader logoSrc="/images/pf_transparent.png" />
+        <SiteHeader logoSrc={assetPath("/images/pf_transparent.png")} />
 
         <div className="how-hero-content">
           <h1 id="how-hero-heading">
@@ -1014,7 +1069,7 @@ function HowItWorksPage() {
       </section>
 
       <section className="time-returned-section">
-        <img src="/images/how_it_works/middle_banner.png" alt="" />
+        <img src={assetPath("/images/how_it_works/middle_banner.png")} alt="" />
         <div className="time-returned-copy">
           <p className="eyebrow">Time returned</p>
           <h2>The best automation is the work you stop thinking about.</h2>
@@ -1052,7 +1107,7 @@ function HowItWorksPage() {
               required.
             </p>
           </div>
-          <a className="button button-light" href="/#platform">
+          <a className="button button-light" href={siteHref("/#platform")}>
             See all integrations <ArrowRight size={17} />
           </a>
         </div>
@@ -1061,7 +1116,7 @@ function HowItWorksPage() {
           <StackPanel title="Lead sources" items={leadSources} footer="and more..." />
           <ArrowRight className="stack-arrow" size={26} />
           <div className="stack-core">
-            <img src="/images/pf_transparent.png" alt="" />
+            <img src={assetPath("/images/pf_transparent.png")} alt="" />
             <span>Pathflow</span>
             <strong>Acquisitions</strong>
           </div>
@@ -1074,7 +1129,7 @@ function HowItWorksPage() {
 
       <section className="control-section">
         <div className="control-media">
-          <img src="/images/how_it_works/product_photo.png" alt="Acquisitions configuration screen" />
+          <img src={assetPath("/images/how_it_works/product_photo.png")} alt="Acquisitions configuration screen" />
         </div>
         <div className="control-copy">
           <p className="eyebrow">You're in control</p>
@@ -1118,7 +1173,7 @@ function HowItWorksPage() {
       </section>
 
       <section className="how-bottom-cta-section">
-        <img src="/images/how_it_works/bottom_banner.png" alt="" />
+        <img src={assetPath("/images/how_it_works/bottom_banner.png")} alt="" />
         <div className="how-bottom-cta-content">
           <p className="eyebrow">Ready to acquire more?</p>
           <h2>
@@ -1146,11 +1201,11 @@ function PricingPage() {
   return (
     <main className="pricing-page">
       <section className="pricing-hero-section" aria-labelledby="pricing-hero-heading">
-        <img className="pricing-hero-image" src="/images/pricing/pricing-hero.png" alt="" />
+        <img className="pricing-hero-image" src={assetPath("/images/pricing/pricing-hero.png")} alt="" />
 
         <SiteHeader
           activeHref="/pricing"
-          logoSrc="/images/pf_transparent.png"
+          logoSrc={assetPath("/images/pf_transparent.png")}
           brandName="Acquisitions"
           startHref={contactHref}
         />
@@ -1210,7 +1265,7 @@ function PricingPage() {
 
         <article className="pricing-enterprise-card">
           <div className="pricing-enterprise-media">
-            <img src="/images/pricing/enterprise-pricing.png" alt="" />
+            <img src={assetPath("/images/pricing/enterprise-pricing.png")} alt="" />
             <p>
               <span>Built</span>
               <span>for bigger</span>
@@ -1233,7 +1288,7 @@ function PricingPage() {
       </section>
 
       <section className="pricing-bottom-section">
-        <img src="/images/pricing/bottom-banner.png" alt="" />
+        <img src={assetPath("/images/pricing/bottom-banner.png")} alt="" />
         <div className="pricing-bottom-copy">
           <h2>Built for the work ahead.</h2>
         </div>
@@ -1418,7 +1473,7 @@ function ContactPage() {
       <section className="contact-section" aria-labelledby="contact-heading">
         <SiteHeader
           activeHref="/contact"
-          logoSrc="/images/pf_transparent.png"
+          logoSrc={assetPath("/images/pf_transparent.png")}
           brandName="Acquisitions"
           startHref={contactHref}
         />
@@ -1523,7 +1578,7 @@ function ContactPage() {
 
           <aside className="contact-info-panel">
             <div className="contact-node-art" aria-hidden="true">
-              <img src="/images/contact/nodes.png" alt="" />
+              <img src={assetPath("/images/contact/nodes.png")} alt="" />
             </div>
             <div className="contact-side-copy">
               <p className="eyebrow">For custom deployments</p>
@@ -1862,7 +1917,7 @@ function SoftwareStoryboard() {
         <div className="software-panel-surface">
           <header className="software-chat-header">
             <span className="software-agent-avatar">
-              <img src="/images/pf_transparent.png" alt="" />
+              <img src={assetPath("/images/pf_transparent.png")} alt="" />
             </span>
             <strong>Acquisitions</strong>
             <span className="software-online"><i />Online</span>
@@ -1882,7 +1937,7 @@ function SoftwareStoryboard() {
                 </p>
                 {message.author === "agent" && (
                   <span className="software-avatar software-avatar-agent">
-                    <img src="/images/pf_transparent.png" alt="" />
+                    <img src={assetPath("/images/pf_transparent.png")} alt="" />
                   </span>
                 )}
               </div>

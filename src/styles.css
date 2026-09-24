@@ -1305,7 +1305,7 @@ h1 span {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: url("/images/landing-banner.png") center / cover no-repeat;
+  background: url("/acquisitions/images/landing-banner.png") center / cover no-repeat;
   filter: blur(22px);
   opacity: 0.5;
   transform: scale(1.05);
@@ -2622,7 +2622,7 @@ h1 span {
 }
 
 .step-visual {
-  --step-bg: url("/images/how_it_works/product_photo.png");
+  --step-bg: url("/acquisitions/images/how_it_works/product_photo.png");
   position: relative;
   display: grid;
   height: clamp(188px, 12vw, 206px);
@@ -2678,19 +2678,19 @@ h1 span {
 }
 
 .step-visual-lead {
-  --step-bg: url("/images/acquisitions.png");
+  --step-bg: url("/acquisitions/images/acquisitions.png");
 }
 
 .step-visual-chat {
-  --step-bg: url("/images/conversations.png");
+  --step-bg: url("/acquisitions/images/conversations.png");
 }
 
 .step-visual-intent {
-  --step-bg: url("/images/documents.png");
+  --step-bg: url("/acquisitions/images/documents.png");
 }
 
 .step-visual-booking {
-  --step-bg: url("/images/how_it_works/product_photo.png");
+  --step-bg: url("/acquisitions/images/how_it_works/product_photo.png");
 }
 
 .mini-lead-card,

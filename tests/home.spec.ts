@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("renders the acquisition landing page sections", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/acquisitions/");
 
   await expect(
     page.getByRole("heading", { name: "Interest becomes opportunity." }),
@@ -12,21 +12,21 @@ test("renders the acquisition landing page sections", async ({ page }) => {
 });
 
 test("routes the header how it works link to the dedicated page", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/acquisitions/");
 
   await page
     .getByRole("navigation", { name: "Primary navigation" })
     .getByRole("link", { name: "How it works" })
     .click();
 
-  await expect(page).toHaveURL(/\/how-it-works$/);
+  await expect(page).toHaveURL(/\/acquisitions\/how-it-works$/);
   await expect(page.getByRole("heading", { name: /Your leads keep moving/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: "From interest to conversation." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Works with your existing stack." })).toBeVisible();
 });
 
 test("renders the pricing page", async ({ page }) => {
-  await page.goto("/pricing");
+  await page.goto("/acquisitions/pricing");
 
   await expect(page.getByRole("heading", { name: /Simple pricing/ })).toBeVisible();
   await expect(page.getByText("$199")).toBeVisible();
@@ -35,7 +35,7 @@ test("renders the pricing page", async ({ page }) => {
 });
 
 test("renders the contact page with product multi-select", async ({ page }) => {
-  await page.goto("/contact");
+  await page.goto("/acquisitions/contact");
 
   await expect(page.getByRole("heading", { name: "Let's talk." })).toBeVisible();
   await expect(page.getByText("info@getpathflow.com")).toBeVisible();

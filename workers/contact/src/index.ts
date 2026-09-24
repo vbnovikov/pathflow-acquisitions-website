@@ -55,7 +55,6 @@ type TurnstileVerification = {
 const DEFAULT_ALLOWED_ORIGINS = [
   "https://getpathflow.com",
   "https://www.getpathflow.com",
-  "https://vbnovikov.github.io",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
 ];

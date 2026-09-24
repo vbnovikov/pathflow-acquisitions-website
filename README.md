@@ -1,6 +1,6 @@
 # Pathflow Acquisitions Website
 
-Vite + React landing page for Pathflow Acquisitions, prepared for GitHub Pages.
+Vite + React landing page for Pathflow Acquisitions.
 
 ## Commands
 
@@ -11,7 +11,6 @@ npm run build
 npm run worker:login
 npm run worker:dev
 npm run worker:deploy
-npm run deploy
 ```
 
 ## Images
@@ -24,13 +23,27 @@ The current hero image is:
 public/images/landing-hero.png
 ```
 
-## GitHub Pages
+## Deployment Target
 
-The Vite config uses `base: "./"` so the built site works from a GitHub Pages project path. After connecting this folder to a GitHub repo, `npm run deploy` will build the app and publish `dist` with `gh-pages`.
+The marketing website is built for this path:
+
+```text
+https://getpathflow.com/acquisitions
+```
+
+Do not deploy this website to `acquisitions.getpathflow.com`; that subdomain is reserved for the Acquisitions app.
+
+The Vite config uses `base: "/acquisitions/"`, and internal links are generated under that base path. The built static assets should be served so these paths resolve:
+
+```text
+/acquisitions/
+/acquisitions/assets/*
+/acquisitions/images/*
+```
 
 ## Contact Form Security
 
-GitHub Pages is static and the repository may be public, so never put email provider API keys, Cloudflare Turnstile secrets, or recipient routing logic in the React app.
+This repository may be public, so never put email provider API keys, Cloudflare Turnstile secrets, or recipient routing logic in the React app.
 
 Contact submissions are handled by the Cloudflare Worker in `workers/contact`.
 
