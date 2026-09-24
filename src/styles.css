@@ -5394,7 +5394,11 @@ code {
     height: auto;
   }
 
-  .site-header {
+  .site-header,
+  .hero-section .site-header,
+  .how-hero-section .site-header,
+  .pricing-hero-section .site-header,
+  .contact-section .site-header {
     position: fixed;
     top: 0;
     right: 0;
@@ -5460,7 +5464,11 @@ code {
     bottom: 0;
   }
 
-  .header-actions {
+  .header-actions,
+  .hero-section .header-actions,
+  .how-hero-section .header-actions,
+  .pricing-hero-section .header-actions,
+  .contact-section .header-actions {
     display: none;
   }
 
@@ -5924,12 +5932,7 @@ code {
   }
 
   .how-event-stack {
-    --card-step: 85px;
-    height: 242px;
-    right: 20px;
-    bottom: 80px;
-    left: 20px;
-    width: auto;
+    display: none;
   }
 
   .how-event-card-inner {

@@ -46,15 +46,36 @@ test("keeps the header brand aligned across pages", async ({ page }) => {
 
 test("keeps the mobile hero and persistent nav within the viewport", async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 852 });
-  await page.goto("/acquisitions/");
+  const routes = ["/acquisitions/", "/acquisitions/how-it-works", "/acquisitions/pricing", "/acquisitions/contact"];
 
-  const header = page.locator(".site-header");
-  await expect(header).toHaveCSS("position", "fixed");
-  await expect(header.locator(".header-actions")).toBeHidden();
-  await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
-  await expect(
-    page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Pricing" }),
-  ).toBeVisible();
+  for (const route of routes) {
+    await page.goto(route);
+
+    const header = page.locator(".site-header");
+    await expect(header).toHaveCSS("position", "fixed");
+    await expect(header.locator(".header-actions")).toBeHidden();
+    await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Pricing" }),
+    ).toBeVisible();
+
+    const navMetrics = await page.evaluate(() => {
+      const headerRect = document.querySelector(".site-header")?.getBoundingClientRect();
+
+      return {
+        clientWidth: document.documentElement.clientWidth,
+        headerLeft: headerRect?.left ?? 0,
+        headerRight: headerRect?.right ?? 0,
+        scrollWidth: document.documentElement.scrollWidth,
+      };
+    });
+
+    expect(navMetrics.scrollWidth, `${route} page width`).toBe(navMetrics.clientWidth);
+    expect(navMetrics.headerLeft, `${route} header left`).toBe(0);
+    expect(Math.round(navMetrics.headerRight), `${route} header right`).toBe(navMetrics.clientWidth);
+  }
+
+  await page.goto("/acquisitions/");
 
   const metrics = await page.evaluate(() => {
     const heading = document.querySelector(".hero-section h1")?.getBoundingClientRect();
@@ -82,6 +103,9 @@ test("keeps the mobile hero and persistent nav within the viewport", async ({ pa
   expect(metrics.headingRight).toBeLessThanOrEqual(metrics.clientWidth);
   expect(metrics.maxPanelRight).toBeLessThanOrEqual(metrics.heroVisualRight + 1);
   expect(metrics.progressScrollWidth).toBeLessThanOrEqual(metrics.progressClientWidth + 1);
+
+  await page.goto("/acquisitions/how-it-works");
+  await expect(page.locator(".how-event-stack")).toBeHidden();
 });
 
 test("renders the pricing page", async ({ page }) => {
