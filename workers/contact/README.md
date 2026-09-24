@@ -26,7 +26,11 @@ npm run worker:secret:turnstile
 npm run worker:deploy
 ```
 
-7. Set `VITE_CONTACT_ENDPOINT` in the site build environment to the deployed Worker URL and rebuild the site.
+7. Set `VITE_CONTACT_ENDPOINT` in the site build environment to the deployed Worker URL and rebuild the site:
+
+```text
+https://pathflow-contact.vladimir-246.workers.dev
+```
 
 ## Local Development
 

@@ -34,7 +34,7 @@ GitHub Pages is static and the repository may be public, so never put email prov
 
 Contact submissions are handled by the Cloudflare Worker in `workers/contact`.
 
-- Set `VITE_CONTACT_ENDPOINT` to the public Worker URL for the built site.
+- Set `VITE_CONTACT_ENDPOINT` to `https://pathflow-contact.vladimir-246.workers.dev` for the built site.
 - Optionally set `VITE_TURNSTILE_SITE_KEY` to the public Cloudflare Turnstile site key.
 - Store the Turnstile secret key as a Worker secret only.
 - Verify the Turnstile token inside the Worker before sending email.
@@ -48,6 +48,12 @@ The frontend intentionally sends only public form fields, the honeypot value, th
 Cloudflare Email Service requires the sending domain to use Cloudflare DNS. In the Cloudflare dashboard, go to **Compute > Email Service > Email Sending**, onboard `getpathflow.com`, and let Cloudflare add the bounce, SPF, DKIM, and DMARC records.
 
 The Worker uses a `send_email` binding restricted to `info@getpathflow.com` and `website@getpathflow.com`. Before the first deploy, confirm that `info@getpathflow.com` is a verified destination address in **Compute > Email Service > Email Routing > Destination Addresses**.
+
+Current Worker URL:
+
+```text
+https://pathflow-contact.vladimir-246.workers.dev
+```
 
 ```bash
 npm install
