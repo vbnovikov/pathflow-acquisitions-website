@@ -25,6 +25,25 @@ test("routes the header how it works link to the dedicated page", async ({ page 
   await expect(page.getByRole("heading", { name: "Works with your existing stack." })).toBeVisible();
 });
 
+test("keeps the header brand aligned across pages", async ({ page }) => {
+  const routes = ["/acquisitions/", "/acquisitions/how-it-works", "/acquisitions/pricing", "/acquisitions/contact"];
+  let baseline: { x: number; y: number } | undefined;
+
+  for (const route of routes) {
+    await page.goto(route);
+    const brandMark = await page.locator(".brand-mark").boundingBox();
+
+    expect(brandMark, `${route} brand mark`).not.toBeNull();
+
+    if (!baseline) {
+      baseline = { x: brandMark!.x, y: brandMark!.y };
+    }
+
+    expect(Math.abs(brandMark!.x - baseline.x), `${route} brand x`).toBeLessThan(1);
+    expect(Math.abs(brandMark!.y - baseline.y), `${route} brand y`).toBeLessThan(1);
+  }
+});
+
 test("renders the pricing page", async ({ page }) => {
   await page.goto("/acquisitions/pricing");
 

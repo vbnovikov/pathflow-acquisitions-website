@@ -18,6 +18,7 @@
   --cream: #f7f3ea;
   --shell: #fbf8f1;
   --shadow: 0 28px 75px rgba(57, 49, 38, 0.16);
+  --site-page-x: clamp(22px, 5.8vw, 100px);
 }
 
 * {
@@ -52,7 +53,7 @@ a {
 }
 
 .hero-section {
-  --page-x: clamp(18px, 4vw, 56px);
+  --page-x: var(--site-page-x);
   position: relative;
   min-height: max(940px, 100vh);
   padding: 18px var(--page-x) 30px;
@@ -198,6 +199,35 @@ a {
 
 .how-hero-section .site-header::before {
   display: none;
+}
+
+.how-hero-section .brand-name {
+  color: #fffdf6;
+  font-size: clamp(24px, 1.7vw, 30px);
+  font-weight: 600;
+}
+
+.how-hero-section .primary-nav {
+  color: rgba(255, 253, 246, 0.78);
+}
+
+.how-hero-section .primary-nav a:hover,
+.how-hero-section .signin-link:hover {
+  color: #fffdf6;
+}
+
+.how-hero-section .signin-link {
+  color: rgba(255, 253, 246, 0.78);
+}
+
+.how-hero-section .header-actions .button-dark {
+  min-height: 56px;
+  gap: 10px;
+  border: 1px solid rgba(255, 253, 246, 0.52);
+  border-radius: 999px;
+  background: rgba(255, 253, 246, 0.04);
+  color: #fffdf6;
+  box-shadow: none;
 }
 
 .brand {
@@ -2065,7 +2095,7 @@ h1 span {
 }
 
 .how-hero-section {
-  --how-x: clamp(18px, 4vw, 56px);
+  --how-x: var(--site-page-x);
   --page-x: var(--how-x);
   position: relative;
   min-height: clamp(720px, 52vw, 900px);
@@ -4069,7 +4099,7 @@ h1 span {
 }
 
 .pricing-hero-section {
-  --page-x: clamp(22px, 5.8vw, 100px);
+  --page-x: var(--site-page-x);
   position: relative;
   min-height: clamp(660px, 55vw, 850px);
   overflow: hidden;
@@ -4552,7 +4582,7 @@ h1 span {
 }
 
 .contact-section {
-  --page-x: clamp(22px, 5.8vw, 100px);
+  --page-x: var(--site-page-x);
   position: relative;
   min-height: 100vh;
   padding: 18px var(--page-x) clamp(58px, 6vw, 96px);
