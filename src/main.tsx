@@ -541,16 +541,19 @@ function SiteHeader({
   logoSrc = assetPath("/images/pf_black_transparent.png"),
   brandName = "Acquisitions",
   activeHref,
+  className,
 }: {
   startHref?: string;
   logoSrc?: string;
   brandName?: string;
   activeHref?: string;
+  className?: string;
 }) {
   const normalizedActiveHref = normalizeRoutePath(activeHref);
+  const headerClassName = className ? `site-header ${className}` : "site-header";
 
   return (
-    <header className="site-header">
+    <header className={headerClassName}>
       <a className="brand" href={siteHref("/")} aria-label="Pathflow Acquisitions home">
         <span className="brand-mark">
           <img src={logoSrc} alt="" />
@@ -2182,20 +2185,38 @@ function App() {
   const isHowItWorksPage = pathname.endsWith("/how-it-works");
   const isPricingPage = pathname.endsWith("/pricing");
   const isContactPage = pathname.endsWith("/contact");
+  const activeHref = isHowItWorksPage
+    ? "/how-it-works"
+    : isPricingPage
+      ? "/pricing"
+      : isContactPage
+        ? "/contact"
+        : undefined;
+  const mobileHeader = (
+    <SiteHeader
+      activeHref={activeHref}
+      className="mobile-site-header"
+      logoSrc={assetPath("/images/pf_transparent.png")}
+      brandName="Acquisitions"
+      startHref={isPricingPage || isContactPage ? contactHref : "#start"}
+    />
+  );
+  const page = isHowItWorksPage ? (
+    <HowItWorksPage />
+  ) : isPricingPage ? (
+    <PricingPage />
+  ) : isContactPage ? (
+    <ContactPage />
+  ) : (
+    <LandingPage />
+  );
 
-  if (isHowItWorksPage) {
-    return <HowItWorksPage />;
-  }
-
-  if (isPricingPage) {
-    return <PricingPage />;
-  }
-
-  if (isContactPage) {
-    return <ContactPage />;
-  }
-
-  return <LandingPage />;
+  return (
+    <>
+      {mobileHeader}
+      {page}
+    </>
+  );
 }
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

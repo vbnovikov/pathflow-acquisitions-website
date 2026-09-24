@@ -144,6 +144,10 @@ a {
   color: var(--ink);
 }
 
+.mobile-site-header {
+  display: none;
+}
+
 .site-header::before {
   content: "";
   position: absolute;
@@ -5394,11 +5398,11 @@ code {
     height: auto;
   }
 
-  .site-header,
-  .hero-section .site-header,
-  .how-hero-section .site-header,
-  .pricing-hero-section .site-header,
-  .contact-section .site-header {
+  main .site-header:not(.mobile-site-header) {
+    display: none;
+  }
+
+  .mobile-site-header {
     position: fixed;
     top: 0;
     right: 0;
@@ -5414,29 +5418,25 @@ code {
     backdrop-filter: blur(18px) saturate(1.08);
   }
 
-  .site-header::before {
+  .mobile-site-header::before {
     display: none;
   }
 
-  .brand {
+  .mobile-site-header .brand {
     gap: 10px;
   }
 
-  .brand-mark {
+  .mobile-site-header .brand-mark {
     width: 32px;
     height: 32px;
   }
 
-  .brand-name,
-  .hero-section .brand-name,
-  .how-hero-section .brand-name,
-  .pricing-hero-section .brand-name,
-  .contact-section .brand-name {
+  .mobile-site-header .brand-name {
     color: #fffdf6;
     font-size: 24px;
   }
 
-  .primary-nav {
+  .mobile-site-header .primary-nav {
     display: flex;
     width: 100%;
     justify-content: space-between;
@@ -5449,26 +5449,22 @@ code {
     scrollbar-width: none;
   }
 
-  .primary-nav::-webkit-scrollbar {
+  .mobile-site-header .primary-nav::-webkit-scrollbar {
     display: none;
   }
 
-  .primary-nav a {
+  .mobile-site-header .primary-nav a {
     flex: 0 0 auto;
     min-height: 28px;
     align-items: center;
     white-space: nowrap;
   }
 
-  .primary-nav a.is-active::after {
+  .mobile-site-header .primary-nav a.is-active::after {
     bottom: 0;
   }
 
-  .header-actions,
-  .hero-section .header-actions,
-  .how-hero-section .header-actions,
-  .pricing-hero-section .header-actions,
-  .contact-section .header-actions {
+  .mobile-site-header .header-actions {
     display: none;
   }
 

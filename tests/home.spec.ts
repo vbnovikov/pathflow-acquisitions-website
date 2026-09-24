@@ -31,7 +31,7 @@ test("keeps the header brand aligned across pages", async ({ page }) => {
 
   for (const route of routes) {
     await page.goto(route);
-    const brandMark = await page.locator(".brand-mark").boundingBox();
+    const brandMark = await page.locator("main .site-header:not(.mobile-site-header) .brand-mark").boundingBox();
 
     expect(brandMark, `${route} brand mark`).not.toBeNull();
 
@@ -51,16 +51,16 @@ test("keeps the mobile hero and persistent nav within the viewport", async ({ pa
   for (const route of routes) {
     await page.goto(route);
 
-    const header = page.locator(".site-header");
+    const header = page.locator(".mobile-site-header");
     await expect(header).toHaveCSS("position", "fixed");
     await expect(header.locator(".header-actions")).toBeHidden();
-    await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
+    await expect(header.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
     await expect(
-      page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Pricing" }),
+      header.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Pricing" }),
     ).toBeVisible();
 
     const navMetrics = await page.evaluate(() => {
-      const headerRect = document.querySelector(".site-header")?.getBoundingClientRect();
+      const headerRect = document.querySelector(".mobile-site-header")?.getBoundingClientRect();
 
       return {
         clientWidth: document.documentElement.clientWidth,
@@ -73,6 +73,23 @@ test("keeps the mobile hero and persistent nav within the viewport", async ({ pa
     expect(navMetrics.scrollWidth, `${route} page width`).toBe(navMetrics.clientWidth);
     expect(navMetrics.headerLeft, `${route} header left`).toBe(0);
     expect(Math.round(navMetrics.headerRight), `${route} header right`).toBe(navMetrics.clientWidth);
+
+    await page.evaluate(() => window.scrollTo(0, 500));
+
+    const scrolledMetrics = await page.evaluate(() => {
+      const headerRect = document.querySelector(".mobile-site-header")?.getBoundingClientRect();
+      const topCenterElement = document.elementFromPoint(window.innerWidth / 2, 10);
+
+      return {
+        headerBottom: headerRect?.bottom ?? 0,
+        headerTop: headerRect?.top ?? 0,
+        topCenterIsHeader: Boolean(topCenterElement?.closest(".mobile-site-header")),
+      };
+    });
+
+    expect(scrolledMetrics.headerTop, `${route} scrolled header top`).toBe(0);
+    expect(scrolledMetrics.headerBottom, `${route} scrolled header bottom`).toBeGreaterThan(80);
+    expect(scrolledMetrics.topCenterIsHeader, `${route} scrolled header hit target`).toBe(true);
   }
 
   await page.goto("/acquisitions/");
