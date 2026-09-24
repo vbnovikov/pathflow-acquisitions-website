@@ -23,6 +23,17 @@ const checks = [
     ),
     message: "Worker CORS must not allow the private domain or GitHub Pages origin.",
   },
+  {
+    name: "Router route is path-scoped",
+    passed:
+      readFileSync("workers/acquisitions-router/wrangler.toml", "utf8").includes(
+        'pattern = "getpathflow.com/acquisitions*"',
+      ) &&
+      !readFileSync("workers/acquisitions-router/wrangler.toml", "utf8").includes(
+        'pattern = "getpathflow.com/*"',
+      ),
+    message: "The acquisitions router must only run on getpathflow.com/acquisitions*, never the root site.",
+  },
 ];
 
 const failedChecks = checks.filter((check) => !check.passed);

@@ -8,6 +8,8 @@ Vite + React landing page for Pathflow Acquisitions.
 npm install
 npm run dev
 npm run build
+npm run pages:deploy
+npm run router:deploy
 npm run worker:login
 npm run worker:dev
 npm run worker:deploy
@@ -48,6 +50,22 @@ The Vite config uses `base: "/acquisitions/"`, and internal links are generated 
 ```
 
 The build runs `npm run verify:deployment-target` first. That check protects against accidentally changing the build target back to root, reintroducing GitHub Pages deployment, or allowing the private/GitHub Pages domains in Worker CORS.
+
+## Cloudflare Pages Hosting
+
+The static site is deployed to Cloudflare Pages project:
+
+```text
+pathflow-acquisitions-website
+```
+
+Pages serves the build on its own `*.pages.dev` origin. The public `getpathflow.com/acquisitions` path is handled by the Worker in `workers/acquisitions-router`, which is routed only on:
+
+```text
+getpathflow.com/acquisitions*
+```
+
+That Worker strips the `/acquisitions` prefix before fetching Pages assets, and falls back to `index.html` for client-side routes like `/acquisitions/pricing` and `/acquisitions/contact`. It must not be broadened to `getpathflow.com/*`, because the root domain is the main product website.
 
 ## Contact Form Security
 

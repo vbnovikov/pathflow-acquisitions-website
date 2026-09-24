@@ -1,0 +1,12 @@
+name = "pathflow-acquisitions-router"
+main = "src/index.ts"
+compatibility_date = "2026-09-24"
+workers_dev = false
+
+[vars]
+PAGES_ORIGIN = "https://pathflow-acquisitions-website.pages.dev"
+SITE_PREFIX = "/acquisitions"
+
+[[routes]]
+pattern = "getpathflow.com/acquisitions*"
+zone_name = "getpathflow.com"
