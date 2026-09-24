@@ -33,6 +33,12 @@ https://getpathflow.com/acquisitions
 
 Do not deploy this website to `acquisitions.getpathflow.com`; that subdomain is reserved for the Acquisitions app.
 
+Do not deploy this website to the `getpathflow.com` root. The main product website owns:
+
+```text
+https://getpathflow.com/
+```
+
 The Vite config uses `base: "/acquisitions/"`, and internal links are generated under that base path. The built static assets should be served so these paths resolve:
 
 ```text
@@ -40,6 +46,8 @@ The Vite config uses `base: "/acquisitions/"`, and internal links are generated 
 /acquisitions/assets/*
 /acquisitions/images/*
 ```
+
+The build runs `npm run verify:deployment-target` first. That check protects against accidentally changing the build target back to root, reintroducing GitHub Pages deployment, or allowing the private/GitHub Pages domains in Worker CORS.
 
 ## Contact Form Security
 

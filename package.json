@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "verify:deployment-target": "node scripts/verify-acquisitions-target.mjs",
+    "build": "npm run verify:deployment-target && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
