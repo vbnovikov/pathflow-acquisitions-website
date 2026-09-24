@@ -44,6 +44,46 @@ test("keeps the header brand aligned across pages", async ({ page }) => {
   }
 });
 
+test("keeps the mobile hero and persistent nav within the viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 393, height: 852 });
+  await page.goto("/acquisitions/");
+
+  const header = page.locator(".site-header");
+  await expect(header).toHaveCSS("position", "fixed");
+  await expect(header.locator(".header-actions")).toBeHidden();
+  await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Pricing" }),
+  ).toBeVisible();
+
+  const metrics = await page.evaluate(() => {
+    const heading = document.querySelector(".hero-section h1")?.getBoundingClientRect();
+    const heroVisual = document.querySelector(".hero-visual")?.getBoundingClientRect();
+    const progress = document.querySelector(".hero-progress");
+    const visiblePanelRights = Array.from(
+      document.querySelectorAll(".home-hero-storyboard .software-panel-surface"),
+    )
+      .map((element) => element.getBoundingClientRect())
+      .filter((rect) => rect.width > 0 && rect.height > 0)
+      .map((rect) => rect.right);
+
+    return {
+      clientWidth: document.documentElement.clientWidth,
+      heroVisualRight: heroVisual?.right ?? 0,
+      headingRight: heading?.right ?? 0,
+      maxPanelRight: Math.max(...visiblePanelRights),
+      progressClientWidth: progress?.clientWidth ?? 0,
+      progressScrollWidth: progress?.scrollWidth ?? 0,
+      scrollWidth: document.documentElement.scrollWidth,
+    };
+  });
+
+  expect(metrics.scrollWidth).toBe(metrics.clientWidth);
+  expect(metrics.headingRight).toBeLessThanOrEqual(metrics.clientWidth);
+  expect(metrics.maxPanelRight).toBeLessThanOrEqual(metrics.heroVisualRight + 1);
+  expect(metrics.progressScrollWidth).toBeLessThanOrEqual(metrics.progressClientWidth + 1);
+});
+
 test("renders the pricing page", async ({ page }) => {
   await page.goto("/acquisitions/pricing");
 

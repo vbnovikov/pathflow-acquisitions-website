@@ -5386,7 +5386,7 @@ code {
 @media (max-width: 760px) {
   .hero-section {
     min-height: auto;
-    padding: 18px 18px 52px;
+    padding: 132px 18px 52px;
   }
 
   .hero-art {
@@ -5395,9 +5395,73 @@ code {
   }
 
   .site-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 80;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 253, 246, 0.12);
+    padding: 12px 18px 10px;
+    background: rgba(6, 8, 7, 0.92);
+    color: #fffdf6;
+    backdrop-filter: blur(18px) saturate(1.08);
+  }
+
+  .site-header::before {
+    display: none;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand-name,
+  .hero-section .brand-name,
+  .how-hero-section .brand-name,
+  .pricing-hero-section .brand-name,
+  .contact-section .brand-name {
+    color: #fffdf6;
+    font-size: 24px;
+  }
+
+  .primary-nav {
     display: flex;
-    align-items: center;
+    width: 100%;
     justify-content: space-between;
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 2px;
+    color: rgba(255, 253, 246, 0.78);
+    font-size: 12px;
+    scrollbar-width: none;
+  }
+
+  .primary-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .primary-nav a {
+    flex: 0 0 auto;
+    min-height: 28px;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .primary-nav a.is-active::after {
+    bottom: 0;
+  }
+
+  .header-actions {
+    display: none;
   }
 
   .brand-division,
@@ -5412,24 +5476,82 @@ code {
   }
 
   .hero-grid {
-    margin-top: 70px;
+    margin-top: 28px;
   }
 
   .hero-copy {
-    transform: translateY(-10px);
+    max-width: 100%;
+    transform: none;
   }
 
-  h1 {
-    font-size: 64px;
+  .hero-section h1 {
+    max-width: 100%;
+    font-size: clamp(52px, 16vw, 68px);
+    line-height: 0.98;
   }
 
   .hero-intro {
+    max-width: 100%;
     font-size: 18px;
   }
 
   .hero-cta {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .hero-visual {
+    min-height: clamp(340px, 88vw, 500px);
+    overflow: visible;
+  }
+
+  .home-hero-storyboard {
+    top: 0;
+    width: min(520px, calc(100vw - 48px));
+  }
+
+  .hero-bottom-rail {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    align-items: start;
+    margin-top: 24px;
+  }
+
+  .hero-bottom-rail p:last-child {
+    justify-self: start;
+  }
+
+  .hero-progress {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .hero-progress::before,
+  .hero-progress::after {
+    top: 5px;
+  }
+
+  .hero-progress span {
+    min-width: 0;
+    gap: 10px;
+    padding-inline: 1px;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-progress i {
+    width: 10px;
+    height: 10px;
+    border-width: 1.5px;
+  }
+
+  .pricing-hero-section,
+  .contact-section,
+  .how-hero-section {
+    padding-top: 132px;
   }
 
   .trust-row {
@@ -5474,14 +5596,14 @@ code {
   }
 
   .hero-visual {
-    min-height: 520px;
+    min-height: clamp(340px, 88vw, 500px);
   }
 
   .home-hero-storyboard {
     top: 0;
     right: auto;
     left: 50%;
-    width: min(720px, 95vw);
+    width: min(520px, calc(100vw - 48px));
     height: auto;
     transform: translateX(-50%);
   }
@@ -5585,7 +5707,7 @@ code {
 
   .pricing-hero-section {
     min-height: 680px;
-    padding: 18px 18px 120px;
+    padding: 132px 18px 120px;
   }
 
   .pricing-hero-image {
@@ -5691,7 +5813,7 @@ code {
   }
 
   .contact-section {
-    padding: 18px 18px 52px;
+    padding: 132px 18px 52px;
   }
 
   .contact-layout {
@@ -5740,7 +5862,7 @@ code {
 
   .how-hero-section {
     min-height: 760px;
-    padding: 18px 18px 42px;
+    padding: 132px 18px 42px;
   }
 
   .how-hero-art img {
@@ -5980,6 +6102,10 @@ code {
 @media (max-width: 460px) {
   h1 {
     font-size: 52px;
+  }
+
+  .hero-section h1 {
+    font-size: clamp(49px, 15.8vw, 62px);
   }
 
   .followup-banner-copy h2 {
