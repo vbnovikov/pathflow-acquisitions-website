@@ -32,7 +32,8 @@ import "./styles.css";
 const signInUrl = "https://acquisitions.getpathflow.com";
 const contactEmail = "info@getpathflow.com";
 const contactHref = `mailto:${contactEmail}`;
-const contactEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || "";
+const contactEndpoint =
+  import.meta.env.VITE_CONTACT_ENDPOINT || "https://pathflow-contact.vladimir-246.workers.dev";
 const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || "";
 
 type NavItem = {
