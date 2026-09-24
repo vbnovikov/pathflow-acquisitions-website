@@ -4841,19 +4841,18 @@ h1 span {
 
 .contact-info-panel {
   position: relative;
-  display: grid;
-  align-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   min-height: 720px;
   border-left: 1px solid rgba(255, 253, 246, 0.12);
   padding-left: clamp(54px, 5vw, 100px);
 }
 
 .contact-node-art {
-  position: absolute;
-  top: 0;
-  right: min(0px, -2vw);
-  left: clamp(18px, 4vw, 76px);
-  height: min(360px, 33vw);
+  width: min(100%, 720px);
+  height: clamp(250px, 23vw, 360px);
   opacity: 0.94;
   pointer-events: none;
 }
@@ -4863,12 +4862,13 @@ h1 span {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: center right;
+  object-position: 42% center;
 }
 
 .contact-side-copy {
+  width: min(100%, 620px);
   max-width: 620px;
-  margin-top: clamp(230px, 20vw, 310px);
+  margin-top: clamp(34px, 3.5vw, 60px);
 }
 
 .contact-side-copy h2 {
@@ -4894,6 +4894,7 @@ h1 span {
 .contact-email-block {
   display: grid;
   gap: 14px;
+  width: min(100%, 620px);
   margin-top: 54px;
 }
 
@@ -5233,7 +5234,7 @@ code {
   }
 
   .contact-info-panel {
-    min-height: 560px;
+    min-height: auto;
     border-top: 1px solid rgba(255, 253, 246, 0.12);
     border-left: 0;
     padding-top: 54px;
@@ -5241,13 +5242,12 @@ code {
   }
 
   .contact-node-art {
-    left: auto;
-    width: min(660px, 80vw);
-    height: 300px;
+    width: min(720px, 100%);
+    height: clamp(220px, 34vw, 300px);
   }
 
   .contact-side-copy {
-    margin-top: 250px;
+    margin-top: 42px;
   }
 
   .how-header {
@@ -5688,16 +5688,16 @@ code {
   }
 
   .contact-info-panel {
-    min-height: 520px;
+    min-height: auto;
   }
 
   .contact-node-art {
     width: 100%;
-    height: 230px;
+    height: clamp(170px, 42vw, 230px);
   }
 
   .contact-side-copy {
-    margin-top: 210px;
+    margin-top: 34px;
   }
 
   .contact-side-copy h2 {
