@@ -30,12 +30,14 @@ import {
 import "./styles.css";
 
 const signInUrl = "https://acquisitions.getpathflow.com";
+const calendarHref = "https://calendar.app.google/GZTkbJFCUjhd58xk7";
 const contactEmail = "info@getpathflow.com";
 const contactHref = `mailto:${contactEmail}`;
 const contactEndpoint =
   import.meta.env.VITE_CONTACT_ENDPOINT || "https://pathflow-contact.vladimir-246.workers.dev";
 const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || "";
 const appBasePath = normalizeBasePath(import.meta.env.BASE_URL);
+const contactPageHref = siteHref("/contact");
 
 function normalizeBasePath(baseUrl: string) {
   if (!baseUrl || baseUrl === "/" || baseUrl === "./") {
@@ -537,7 +539,7 @@ const initialHeroFeed: HeroFeedCard[] = heroEvents.slice(0, 3).map((event, index
 }));
 
 function SiteHeader({
-  startHref = siteHref("/#start"),
+  startHref = calendarHref,
   logoSrc = assetPath("/images/pf_black_transparent.png"),
   brandName = "Acquisitions",
   activeHref,
@@ -819,7 +821,7 @@ function LandingPage() {
           </picture>
         </div>
 
-        <SiteHeader startHref="#start" logoSrc={assetPath("/images/pf_transparent.png")} brandName="Acquisitions" />
+        <SiteHeader logoSrc={assetPath("/images/pf_transparent.png")} brandName="Acquisitions" />
 
         <div className="hero-grid">
           <div className="hero-copy">
@@ -833,7 +835,7 @@ function LandingPage() {
               to the moment it's ready for you.
             </p>
             <div className="hero-cta">
-              <a className="button button-light button-large" href="#start">
+              <a className="button button-light button-large" href={calendarHref}>
                 See Acquisitions <ArrowRight size={18} />
               </a>
               <a className="hero-video-link" href={siteHref("/how-it-works")}>
@@ -991,10 +993,10 @@ function LandingPage() {
             Get your leads handled, your pipeline moving, and your time back.
           </p>
           <div className="final-cta-actions">
-            <a className="button button-light" href={contactHref}>
+            <a className="button button-light" href={calendarHref}>
               Get started <ArrowRight size={17} />
             </a>
-            <a className="final-cta-link" href={contactHref}>
+            <a className="final-cta-link" href={contactPageHref}>
               Talk to our team
             </a>
           </div>
@@ -1031,7 +1033,7 @@ function HowItWorksPage() {
             <a className="button button-dark button-large" href="#how-flow">
               See it in action <ArrowRight size={17} />
             </a>
-            <a className="button button-light button-large" href={contactHref}>
+            <a className="button button-light button-large" href={calendarHref}>
               Book a walkthrough
             </a>
           </div>
@@ -1185,7 +1187,7 @@ function HowItWorksPage() {
           </h2>
           <p>See what Acquisitions could handle for your business.</p>
           <div className="how-bottom-actions">
-            <a className="button button-light button-large" href={contactHref}>
+            <a className="button button-light button-large" href={calendarHref}>
               Book a walkthrough <ArrowRight size={17} />
             </a>
             <a className="video-button" href="#how-flow">
@@ -1210,7 +1212,7 @@ function PricingPage() {
           activeHref="/pricing"
           logoSrc={assetPath("/images/pf_transparent.png")}
           brandName="Acquisitions"
-          startHref={contactHref}
+          startHref={calendarHref}
         />
 
         <div className="pricing-hero-content">
@@ -1243,7 +1245,7 @@ function PricingPage() {
             <p>
               For teams that want leads followed up, qualified, and carried toward booking.
             </p>
-            <a className="button pricing-button-bone" href={contactHref}>
+            <a className="button pricing-button-bone" href={calendarHref}>
               Get started <ArrowRight size={18} />
             </a>
             <small className="pricing-usage-note">Usage billed separately.</small>
@@ -1478,7 +1480,7 @@ function ContactPage() {
           activeHref="/contact"
           logoSrc={assetPath("/images/pf_transparent.png")}
           brandName="Acquisitions"
-          startHref={contactHref}
+          startHref={calendarHref}
         />
 
         <div className="contact-layout">
@@ -2198,7 +2200,7 @@ function App() {
       className="mobile-site-header"
       logoSrc={assetPath("/images/pf_transparent.png")}
       brandName="Acquisitions"
-      startHref={isPricingPage || isContactPage ? contactHref : "#start"}
+      startHref={calendarHref}
     />
   );
   const page = isHowItWorksPage ? (

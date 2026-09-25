@@ -25,6 +25,31 @@ test("routes the header how it works link to the dedicated page", async ({ page 
   await expect(page.getByRole("heading", { name: "Works with your existing stack." })).toBeVisible();
 });
 
+test("links primary CTAs to the calendar and contact page", async ({ page }) => {
+  const calendarHref = "https://calendar.app.google/GZTkbJFCUjhd58xk7";
+
+  await page.goto("/acquisitions/");
+
+  await expect(page.locator(".hero-section .site-header:not(.mobile-site-header) .header-actions .button")).toHaveAttribute(
+    "href",
+    calendarHref,
+  );
+  await expect(page.locator(".hero-cta .button")).toHaveAttribute("href", calendarHref);
+  await expect(page.locator(".final-cta-actions .button")).toHaveAttribute("href", calendarHref);
+  await expect(page.locator(".final-cta-link")).toHaveAttribute("href", "/acquisitions/contact");
+
+  await page.goto("/acquisitions/how-it-works");
+  await expect(page.locator(".how-hero-actions .button-light")).toHaveAttribute("href", calendarHref);
+  await expect(page.locator(".how-bottom-actions .button")).toHaveAttribute("href", calendarHref);
+
+  await page.goto("/acquisitions/pricing");
+  await expect(page.locator(".pricing-hero-section .site-header:not(.mobile-site-header) .header-actions .button")).toHaveAttribute(
+    "href",
+    calendarHref,
+  );
+  await expect(page.locator(".pricing-main-card .button")).toHaveAttribute("href", calendarHref);
+});
+
 test("keeps the header brand aligned across pages", async ({ page }) => {
   const routes = ["/acquisitions/", "/acquisitions/how-it-works", "/acquisitions/pricing", "/acquisitions/contact"];
   let baseline: { x: number; y: number } | undefined;
