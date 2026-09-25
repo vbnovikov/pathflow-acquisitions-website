@@ -431,28 +431,6 @@ h1 span {
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.22);
 }
 
-.hero-video-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: rgba(255, 253, 246, 0.75);
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.hero-video-link span {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border: 1px solid rgba(255, 253, 246, 0.46);
-  border-radius: 50%;
-}
-
-.hero-video-link svg {
-  margin-left: 2px;
-}
-
 .text-link {
   color: #272520;
   font-weight: 600;
@@ -2166,8 +2144,7 @@ h1 span {
 .how-nav,
 .how-nav a,
 .how-header-actions,
-.canonical-footer-brand,
-.video-button {
+.canonical-footer-brand {
   display: inline-flex;
   align-items: center;
 }
@@ -4043,16 +4020,6 @@ h1 span {
   justify-content: center;
   gap: 16px;
   margin-top: 34px;
-}
-
-.video-button {
-  min-height: 58px;
-  gap: 10px;
-  border: 1px solid rgba(255, 253, 246, 0.62);
-  border-radius: 8px;
-  padding: 0 27px;
-  color: #fffdf6;
-  font-weight: 700;
 }
 
 .canonical-footer {
@@ -6085,12 +6052,6 @@ code {
   .how-bottom-actions {
     align-items: center;
     flex-direction: column;
-  }
-
-  .video-button {
-    width: 100%;
-    max-width: 310px;
-    justify-content: center;
   }
 
   .canonical-footer {

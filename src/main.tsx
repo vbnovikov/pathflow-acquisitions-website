@@ -17,7 +17,6 @@ import {
   MessageCircle,
   MoreVertical,
   PhoneCall,
-  Play,
   RefreshCw,
   Send,
   Settings2,
@@ -838,10 +837,6 @@ function LandingPage() {
               <a className="button button-light button-large" href={calendarHref}>
                 See Acquisitions <ArrowRight size={18} />
               </a>
-              <a className="hero-video-link" href={siteHref("/how-it-works")}>
-                <span><Play size={15} /></span>
-                Watch video
-              </a>
             </div>
           </div>
 
@@ -1189,9 +1184,6 @@ function HowItWorksPage() {
           <div className="how-bottom-actions">
             <a className="button button-light button-large" href={calendarHref}>
               Book a walkthrough <ArrowRight size={17} />
-            </a>
-            <a className="video-button" href="#how-flow">
-              <Play size={17} fill="currentColor" /> Watch the video
             </a>
           </div>
         </div>
