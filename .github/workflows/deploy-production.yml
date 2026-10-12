@@ -17,6 +17,7 @@ concurrency:
 jobs:
   deploy:
     name: Verify and deploy Acquisitions
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -33,7 +34,13 @@ jobs:
         run: npm ci
 
       - name: Build prerendered marketing pages
+        env:
+          VITE_CONTACT_ENDPOINT: ${{ vars.VITE_CONTACT_ENDPOINT }}
+          VITE_TURNSTILE_SITE_KEY: ${{ vars.VITE_TURNSTILE_SITE_KEY }}
         run: npm run build
+
+      - name: Validate deployed-site smoke test syntax
+        run: node --check scripts/check-deployed-seo.mjs
 
       - name: Typecheck Cloudflare routing Worker
         run: npm run router:typecheck
