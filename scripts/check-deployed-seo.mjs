@@ -68,7 +68,7 @@ for (const page of pages) {
   const { url, response, body } = await request(page.path);
   console.log(`[${response.status}] ${url}`);
   check(response.status === 200, `${url}: expected HTTP 200`);
-  check(body.includes(`<title>${page.title}</title>`), `${url}: wrong title`);
+  check(body.includes(`<title>${page.title.replaceAll("&", "&amp;")}</title>`), `${url}: wrong title`);
   check(body.includes(`rel="canonical" href="${page.canonical}"`), `${url}: wrong canonical`);
   check(body.includes("<main") && body.includes("<h1"), `${url}: no prerendered main/H1`);
   check(body.includes(page.h1), `${url}: missing page-specific content`);
