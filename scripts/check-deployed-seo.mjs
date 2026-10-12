@@ -35,7 +35,7 @@ const pages = [
     path: "/contact",
     canonical: "https://getpathflow.com/acquisitions/contact",
     title: "Contact & Book a Demo | Pathflow Acquisitions",
-    h1: "Let's talk.",
+    h1: "talk.",
   },
 ];
 
