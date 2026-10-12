@@ -57,6 +57,6 @@ export default {
 } satisfies ExportedHandler<Env>;
 
 function normalizePrefix(prefix: string): string {
-  const normalized = `/${prefix.replace(/^\\/+|\\/+$/g, "")}`;
+  const normalized = "/" + prefix.replace(/^[/]+|[/]+$/g, "");
   return normalized === "/" ? "/acquisitions" : normalized;
 }
