@@ -3,6 +3,13 @@ interface Env {
   SITE_PREFIX?: string;
 }
 
+const publishedRoutes = new Set([
+  "/",
+  "/how-it-works",
+  "/pricing",
+  "/contact",
+]);
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -17,28 +24,39 @@ export default {
       return new Response("Not found", { status: 404 });
     }
 
-    const upstreamUrl = new URL(env.PAGES_ORIGIN);
-    upstreamUrl.pathname = url.pathname.slice(prefix.length) || "/";
-    upstreamUrl.search = url.search;
+    const path = url.pathname.slice(prefix.length);
 
-    const response = await fetch(new Request(upstreamUrl.toString(), request));
-
-    if (response.status !== 404 || !isNavigationRequest(request)) {
-      return response;
+    // Keep canonical route spelling consistent with the prerendered pages.
+    if (path !== "/" && path.endsWith("/") && publishedRoutes.has(path.slice(0, -1))) {
+      url.pathname = `${prefix}${path.slice(0, -1)}`;
+      return Response.redirect(url.toString(), 308);
     }
 
-    const fallbackUrl = new URL(env.PAGES_ORIGIN);
-    fallbackUrl.pathname = "/index.html";
-    return fetch(new Request(fallbackUrl.toString(), request));
+    const isPublishedPage = publishedRoutes.has(path);
+    const isStaticAsset =
+      path === "/sitemap.xml" ||
+      path === "/favicon.ico" ||
+      path.startsWith("/assets/") ||
+      path.startsWith("/images/");
+
+    // Do not send an HTTP 200 SPA homepage for missing product paths.
+    if (!isPublishedPage && !isStaticAsset) {
+      return new Response("Not found", {
+        status: 404,
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      });
+    }
+
+    const upstreamUrl = new URL(env.PAGES_ORIGIN);
+    // Cloudflare Pages resolves extensionless routes to matching .html files.
+    upstreamUrl.pathname = path;
+    upstreamUrl.search = url.search;
+
+    return fetch(new Request(upstreamUrl.toString(), request));
   },
 } satisfies ExportedHandler<Env>;
 
 function normalizePrefix(prefix: string): string {
-  const normalized = `/${prefix.replace(/^\/+|\/+$/g, "")}`;
+  const normalized = "/" + prefix.replace(/^[/]+|[/]+$/g, "");
   return normalized === "/" ? "/acquisitions" : normalized;
-}
-
-function isNavigationRequest(request: Request): boolean {
-  const accept = request.headers.get("Accept") || "";
-  return request.method === "GET" && accept.includes("text/html");
 }

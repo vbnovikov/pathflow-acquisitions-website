@@ -66,7 +66,43 @@ Pages serves the build on its own `*.pages.dev` origin. The public `getpathflow.
 getpathflow.com/acquisitions*
 ```
 
-That Worker strips the `/acquisitions` prefix before fetching Pages assets, and falls back to `index.html` for client-side routes like `/acquisitions/pricing` and `/acquisitions/contact`. It must not be broadened to `getpathflow.com/*`, because the root domain is the main product website.
+That Worker strips the `/acquisitions` prefix before fetching Pages assets. The four real marketing routes have pre-rendered HTML, and unknown paths return HTTP 404 instead of the homepage. The Worker must not be broadened to `getpathflow.com/*`, because the root domain is the main product website.
+
+
+## Automatic production deployment
+
+This site uses an existing **Cloudflare Pages Direct Upload** project, rather than Cloudflare's Git-linked Pages builds. GitHub Actions performs the deployment using Wrangler. No second Pages project or DNS changes are needed.
+
+On every pull request, `.github/workflows/seo-checks.yml` verifies the Vite build, router types, and generated page SEO. On every push to `main`, `.github/workflows/deploy-production.yml`:
+
+1. Installs locked dependencies, builds pre-rendered HTML, checks the router and SEO outputs.
+2. Publishes `dist` to the existing `pathflow-acquisitions-website` Cloudflare Pages project.
+3. Smoke-tests all four pages, their canonical metadata, sitemap XML, and a nonexistent route at the **Pages origin**.
+4. Deploys the path-scoped `pathflow-acquisitions-router` Worker.
+5. Repeats the smoke tests at `https://getpathflow.com/acquisitions/`.
+
+Deployments use one serialized concurrency group and cannot be cancelled by a newer push. Manual execution (`workflow_dispatch`) is allowed, but only for `main`.
+
+### Initial GitHub Actions setup
+
+In this GitHub repository, go to **Settings → Secrets and variables → Actions → Repository secrets** and add:
+
+- `CLOUDFLARE_ACCOUNT_ID` — account ID of the Cloudflare account that owns the existing Pages project.
+- `CLOUDFLARE_API_TOKEN` — a purpose-specific Cloudflare API token with Pages Edit and permission to deploy the **existing** routing Worker. Use the minimum sufficient scope (Workers Editor for that Worker; Workers Routes Write for `getpathflow.com` if Wrangler needs to manage its existing route).
+
+Do **not** put the token in source code, repository variables, or the Vite build. Configure it as a masked GitHub Actions secret and rotate it if exposed.
+
+Optional public frontend settings go in **Settings → Secrets and variables → Actions → Variables**:
+
+- `VITE_CONTACT_ENDPOINT` — defaults to the existing contact Worker URL.
+- `VITE_TURNSTILE_SITE_KEY` — public Turnstile site key, if Turnstile is enabled server-side.
+
+After the secrets are installed and this workflow is merged to `main`, any subsequent push to `main` automatically triggers production deployment. The merge that first introduces the workflow also triggers it. Check **Actions → Deploy Pathflow Acquisitions** for the result.
+
+If the Worker deployment or final smoke check fails, inspect the Actions job immediately and use the prior deployment in the Cloudflare Pages dashboard for rollback if required. Never deploy the Worker before the corresponding Pages files.
+
+To trigger a redeploy without a new commit: **Actions → Deploy Pathflow Acquisitions → Run workflow** and choose `main`.
+
 
 ## Contact Form Security
 
